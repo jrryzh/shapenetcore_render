@@ -123,7 +123,8 @@ def main():
     
     from commons import categories
 
-    shapenet_datadir = "/home/fudan248/zhangjinyu/code_repo/shapenetcorev2/shapenetcorev2_flipped/"
+    #shapenet_datadir = "/home/fudan248/zhangjinyu/code_repo/shapenetcorev2/shapenetcorev2_flipped/"
+    shapenet_datadir = "/mnt/test/data/shapenet/flipped/"
     
     # for synsetId in categories.keys():
     synset_name = categories[synsetId]
@@ -135,19 +136,19 @@ def main():
         return
     
     # create output dir
-    if not os.path.exists(f"/home/add_disk/zhangjinyu/shapenetcorev2_render_output2{synset_name}"):
-        os.makedirs(f"/home/add_disk/zhangjinyu/shapenetcorev2_render_output2{synset_name}")
+    if not os.path.exists(f"/mnt/test/data/shapenet/shapenetcorev2_render_output2/{synset_name}"):
+        os.makedirs(f"/mnt/test/data/shapenet/shapenetcorev2_render_output2/{synset_name}")
     
     # load camera intrinsics
-    for obj_id in os.listdir(category_path):
+    for obj_id in os.listdir(category_path)[:50]:
         try:
             obj_path = os.path.join(category_path, obj_id, "models", "model_normalized.obj")
             urdf_path = os.path.join(category_path, obj_id, "models", "model_normalized.urdf")
-            instance_path = os.path.join(f"/home/add_disk/zhangjinyu/shapenetcorev2_render_output2/{synset_name}", obj_id)
+            instance_path = os.path.join(f"/mnt/test/data/shapenet/shapenetcorev2_render_output2/{synset_name}", obj_id)
             if not os.path.exists(instance_path):
                 os.makedirs(instance_path)
             else:
-                if len(os.listdir(instance_path)) > 1500:
+                if len(os.listdir(instance_path)) > 1800:
                     print(f"Instance {obj_id} already rendered, skipping")
                     continue
             # define engine
@@ -182,7 +183,7 @@ def main():
             mesh = o3d.io.read_triangle_mesh(obj_path)
             
             # IMPORTANT: flip y and z axis
-            # # 定义变换矩阵，将z-up, y-forward转换为y-up, z-forward
+            # # 定义变换矩阵，将z-up, y-forward转换为y-up, z-forward(应该是z-backward)
             # transform_matrix = np.array([[1, 0, 0, 0],
             #                             [0, 0, -1, 0],
             #                             [0, 1, 0, 0],
@@ -281,7 +282,7 @@ def main():
 
                 # pose
                 new_cam_pos = cam_pos
-                new_cam_pos[:3, 1:3] *=-1
+                new_cam_pos[:3, 1:3] *=-1     
                 # change
                 new_cam_pos[:3, 0], new_cam_pos[:3, 1] = new_cam_pos[:3, 1], new_cam_pos[:3, 0].copy()
                 new_cam_pos[:3, 1], new_cam_pos[:3, 2] = new_cam_pos[:3, 2], new_cam_pos[:3, 1].copy()

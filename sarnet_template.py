@@ -46,6 +46,9 @@ def pc_normalize(pc):
     return pc, centroid, scale
 
 def save_to_obj_pts(verts, path):
+    directory = os.path.dirname(path)
+    if not os.path.exists(directory):
+        os.makedirs(directory)
     with open(path, 'w') as file:
         for v in verts:
             file.write('v %f %f %f\n' % (v[0], v[1], v[2]))
@@ -172,11 +175,13 @@ def process_category_test(cate_id, cate_name, source_folder, target_folder, samp
 if __name__ == '__main__':
     random.seed(42)
 
-    source_folder = "/home/fudan248/zhangjinyu/code_repo/shapenetcorev2/shapenetcorev2_flipped"
-    target_folder = "/home/fudan248/zhangjinyu/code_repo/shapenetcorev2/shapenetcorev2_sarnet_fps"
-    sample_num = 128  # Number of sample points
+#   source_folder = "/home/fudan248/zhangjinyu/code_repo/shapenetcorev2/shapenetcorev2_flipped"
+    source_folder = "/mnt/test/data/shapenet/flipped"
+#   target_folder = "/home/fudan248/zhangjinyu/code_repo/shapenetcorev2/shapenetcorev2_sarnet_fps"
+    target_folder = "/mnt/test/data/shapenet/shapenetcorev2_sarnet_fps"
+    sample_num = 36  # Number of sample points
 
-    categories = {
+    categories_old = {
         "02691156": "airplane",
         "02828884": "bench",
         "02876657": "bottle",
@@ -197,6 +202,13 @@ if __name__ == '__main__':
         "04256520": "sofa",
         "04379243": "table",
         "02818832": "bed",
+    }
+
+    categories = {
+    '04460130': 'tower', 
+    '04468005': 'train', 
+    '04530566': 'vessel', 
+    '04554684': 'washer', 
     }
 
     with ThreadPoolExecutor() as executor:

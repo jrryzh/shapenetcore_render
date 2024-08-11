@@ -88,8 +88,9 @@ if __name__ == "__main__":
     from commons import categories
     
     # shapenet_datadir = "/home/fudan248/zhangjinyu/code_repo/shapenetcorev2/ShapeNetCore.v2/"
-    shapenet_datadir = "/home/fudan248/zhangjinyu/code_repo/shapenetcorev2/shapenetcorev2_flipped"
-    for synsetId in categories.keys():
+    # shapenet_datadir = "/home/fudan248/zhangjinyu/code_repo/shapenetcorev2/shapenetcorev2_flipped"
+    shapenet_datadir = "/mnt/test/data/shapenet/flipped"
+    for synsetId in list(categories.keys())[10 : ]:
         category_path = os.path.join(shapenet_datadir, synsetId)
         
         print("Creating urdf for category: ", synsetId)

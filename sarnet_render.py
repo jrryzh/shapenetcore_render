@@ -101,18 +101,21 @@ def check_obj_complete(dir):
 #         "apple":1, "banana":0, "orange":0
 #     }
 
-categories2sym = {
-    'airplane':2, 'bench':2, 'bottle':1, 'car':2, 'chair':2, 'display':2, 'earphone':2, 'faucet':2, 'guitar':2, 'knife':2, 'lamp':2, 'laptop':2, 'loudspeaker':2, 'motorcycle':2, 'piano':2, 'printer':2, 'remote':2, 'sofa':2, 'table':2, 'bed':2
-}
+#categories2sym = {
+    #'airplane':2, 'bench':2, 'bottle':1, 'car':2, 'chair':2, 'display':2, 'earphone':2, 'faucet':2, 'guitar':2, 'knife':2, 'lamp':2, 'laptop':2, 'loudspeaker':2, 'motorcycle':2, 'piano':2, 'printer':2, 'remote':2, 'sofa':2, 'table':2, 'bed':2
+#}
 # categories2sym = {'earphone':2, 'remote':2, 'bed':2}
-
+#categories2sym = {'airplane':2, 'ashcan':1, 'bag':1, 'basket':1, 'bathtub':1, 'bed':2, 'bench':2, 'bicycle':2, 'birdhouse':2, 'bookshelf':2, 'bottle':1, 'bowl':1, 'bus':2, 'cabinet':1, 'camera':2, 'can':1, 'cap':1, 'car':2, 'chair':2, 'clock':2, 'computer':2, 'cup':1, 'curtain':1, 'desk':1, 'door':2, 'dresser':1, 'flower_pot':1, 'glass_box':1, 'guitar':2, 'keyboard':2, 'lamp':2, 'laptop':2,'mantel':1,'monitor':2, 'night_stand':1, 'person':2, 'piano':2, 'plant':1}
+#categories2sym = {'airplane':2, 'ashcan':1, 'bag':1, 'basket':1, 'bathtub':1, 'bed':2, 'bench':2, 'birdhouse':2, 'bookshelf':2, 'bottle':1,} 
+categories2sym = {'laptop': 2, 'loudspeaker': 2, 'mailbox': 2, 'microphone': 2, 'microwave': 2, 'motorcycle': 2, 'mug': 2, 'piano': 2, 'pillow': 2, 'pistol': 2, 'pot': 1, 'printer': 2, 'remote': 2, 'rifle': 2, 'rocket': 2, 'skateboard': 2, 'sofa': 2, 'stove': 2, 'table': 2, 'telephone': 2, 'cellphone': 2, 'tower': 2, 'train': 2, 'vessel': 2, 'washer': 2}
 VIEW=300
 SAMPLE_NUM=4096
-source_folder = "/home/fudan248/zhangjinyu/code_repo/shapenetcorev2/shapenetcorev2_flipped_render_output/"
-target_folder = "/home/add_disk1/zhangjinyu/shapenetcorev2_sarnet_output/"
+#source_folder = "/home/fudan248/zhangjinyu/code_repo/shapenetcorev2/shapenetcorev2_flipped_render_output/"
+source_folder = "/mnt/test/data/shapenet/shapenetcorev2_render_output2/"
+target_folder = "/mnt/test/data/shapenet/shapenetcorev2_sarnet_output/"
 # target_folder = "/home/fudan248/zhangjinyu/code_repo/shapenetcorev2/shapenetcorev2_sarnet_output/"
-target_template_folder = "/home/fudan248/zhangjinyu/code_repo/shapenetcorev2/shapenetcorev2_sarnet_fps"
-
+#target_template_folder = "/home/fudan248/zhangjinyu/code_repo/shapenetcorev2/shapenetcorev2_sarnet_fps"
+target_template_folder = "/mnt/test/data/shapenet/shapenetcorev2_sarnet_fps/"
 def process_template():
     create_folders(target_template_folder)
     for cate_name in categories2sym.keys():
@@ -194,6 +197,7 @@ def _processing(instance_path_list):
                 trans = pose[:3,3] - centroid
                 trans_scale = [trans[0], trans[1], trans[2], scale]
                 size = size / scale
+                trans = trans / scale
 
                 # create the sym, transform to canonical: p' = R.T*p - R.T*t = R.T(p-t)
                 cano_pcd = np.dot(obsv_pcd - trans, rot_matrix) 
@@ -247,7 +251,9 @@ def _processing(instance_path_list):
         except Exception as e:
             print("Error: ", instance_path)
             print(e)
-            with open('/home/fudan248/zhangjinyu/tmp/test0530/failed_instance_path.txt', 'a') as file:
+            #failed_path = "/home/fudan248/zhangjinyu/tmp/test0530/failed_instance_path.txt"
+            failed_path = '/mnt/test/data/shapenet/failed_instance_path.txt'
+            with open(failed_path, 'a') as file:
                 file.write(instance_path)
             continue
 
@@ -260,7 +266,7 @@ print(all_instance_path_list)
 
 # import ipdb; ipdb.set_trace()
 
-cpu_num = multiprocessing.cpu_count() 
+cpu_num = multiprocessing.cpu_count() //2
 split_instance_path_list = chunks(all_instance_path_list, cpu_num)
 if cpu_num > len(split_instance_path_list):
     cpu_num = len(split_instance_path_list)
